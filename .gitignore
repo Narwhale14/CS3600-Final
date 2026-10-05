@@ -1,0 +1,4 @@
+.DS_Store
+backend/config.php
+backend/vendor/
+node_modules/

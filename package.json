@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  },
+  "scripts": {
+    "full": "concurrently -n api,web -c blue,green \"php -S localhost:8000 -t backend/public\" \"npm --prefix frontend run dev\""
+}
+}
