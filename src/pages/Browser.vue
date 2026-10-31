@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Card from './Card.vue'
-import { listings } from './listings'
+import Card from '../Card.vue'
+import { listings } from '../listings'
 </script>
 
 <template>
