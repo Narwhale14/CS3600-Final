@@ -8,11 +8,12 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build",
-    "format": "prettier --write --experimental-cli src/"
+    "type-check": "vue-tsc --build"
   },
   "dependencies": {
-    "vue": "^3.5.42"
+    "primeicons": "^8.0.2",
+    "vue": "^3.5.42",
+    "vue-router": "^5.4.0"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.5",
@@ -20,7 +21,6 @@
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/tsconfig": "^0.9.1",
     "npm-run-all2": "^9.0.3",
-    "prettier": "3.9.6",
     "typescript": "~6.0.0",
     "vite": "^8.2.2",
     "vite-plugin-vue-devtools": "^8.2.1",
