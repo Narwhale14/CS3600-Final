@@ -1,7 +1,17 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Header from './Header.vue'
+</script>
 
 <template>
-  <h1>Hello</h1>
+  <Header></Header>
+
+  <div class="main-page">
+    <RouterView/>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.main-page {
+  padding: 3rem;
+}
+</style>
