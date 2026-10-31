@@ -47,8 +47,7 @@ const props = defineProps<{
   font-size: 1.05rem;
 }
 
-.title,
-.location {
+.title, .location {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
