@@ -6,7 +6,7 @@ const props = defineProps<{
   title: string,
   city: string,
   state: string,
-  image: string
+  image?: string
 }>();
 </script>
 
