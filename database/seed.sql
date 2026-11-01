@@ -16,53 +16,43 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping data for table `BodyType`
+-- Dumping data for table `customer`
 --
 
-LOCK TABLES `BodyType` WRITE;
-/*!40000 ALTER TABLE `BodyType` DISABLE KEYS */;
-INSERT INTO `BodyType` VALUES (1,'Body Type',NULL),(2,'Car',1),(3,'SUV',1),(4,'Truck',1),(5,'Sedan',2),(6,'Hatchback',2),(7,'Coupe',2),(8,'Full-Size SUV',3),(9,'Mid-Size SUV',3),(10,'Compact SUV',3),(11,'Pickup',4),(12,'Heavy-Duty Pickup',4),(13,'Commercial Truck',4);
-/*!40000 ALTER TABLE `BodyType` ENABLE KEYS */;
+LOCK TABLES `customer` WRITE;
+/*!40000 ALTER TABLE `customer` DISABLE KEYS */;
+INSERT INTO `customer` VALUES (1,'John','Doe','208-111-2222','john.doe@test.com');
+/*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Dumping data for table `Car`
+-- Dumping data for table `listing`
 --
 
-LOCK TABLES `Car` WRITE;
-/*!40000 ALTER TABLE `Car` DISABLE KEYS */;
-INSERT INTO `Car` VALUES ('D8FD4F95CD58111F1','Honda','Civic',2022,28500,24500.00,'Available','Moscow','ID',5,'/images/civic.jpg','Blue','Gas','Automatic'),('D8FD50686D58111F1','Ford','Mustang',2020,36000,29995.00,'Available','Pullman','WA',7,'/images/mustang.jpg','Red','Gas','Manual'),('D8FD50924D58111F1','Volkswagen','Golf',2019,54000,17995.00,'Available','Spokane','WA',6,'/images/golf.jpg','White','Gas','Automatic'),('D8FD50A3CD58111F1','Toyota','RAV4',2022,31000,28995.00,'Available','Moscow','ID',10,'/images/rav4.jpg','Gray','Hybrid','Automatic'),('D8FD50B36D58111F1','Honda','CR-V',2021,46000,25995.00,'Available','Coeur d\'Alene','ID',10,'/images/crv.jpg','Black','Gas','Automatic'),('D8FD510EAD58111F1','Chevrolet','Tahoe',2020,67000,38995.00,'Available','Spokane','WA',8,'/images/tahoe.jpg','Black','Gas','Automatic'),('D8FD51202D58111F1','Ford','F-150',2021,49000,34995.00,'Available','Lewiston','ID',11,'/images/f150.jpg','Blue','Gas','Automatic'),('D8FD5132ED58111F1','Chevrolet','Silverado 2500HD',2019,81000,36500.00,'Available','Spokane','WA',12,'/images/silverado.jpg','Silver','Diesel','Automatic'),('D8FD51446D58111F1','Toyota','Tacoma',2022,33000,32995.00,'Available','Pullman','WA',11,'/images/tacoma.jpg','Green','Gas','Automatic'),('DEMO0000000000001','Toyota','Camry',2021,42000,22995.00,'Sold','Moscow','ID',5,'/images/camry.jpg','Silver','Gas','Automatic');
-/*!40000 ALTER TABLE `Car` ENABLE KEYS */;
+LOCK TABLES `listing` WRITE;
+/*!40000 ALTER TABLE `listing` DISABLE KEYS */;
+INSERT INTO `listing` (`vin`,`make`,`model`,`year`,`mileage`,`listing_price`,`status`,`city`,`state`,`body_type`,`image_url`,`color`,`fuel_type`,`transmission`) VALUES ('D8FD4F95CD58111F1','Honda','Civic',2022,28500,24500.00,'Available','Moscow','ID','Sedan','/images/civic.jpg','Blue','Gas','Automatic'),('D8FD50686D58111F1','Ford','Mustang',2020,36000,29995.00,'Available','Pullman','WA','Coupe','/images/mustang.jpg','Red','Gas','Manual'),('D8FD50924D58111F1','Volkswagen','Golf',2019,54000,17995.00,'Available','Spokane','WA','Hatchback','/images/golf.jpg','White','Gas','Automatic'),('D8FD50A3CD58111F1','Toyota','RAV4',2022,31000,28995.00,'Available','Moscow','ID','Compact SUV','/images/rav4.jpg','Gray','Hybrid','Automatic'),('D8FD50B36D58111F1','Honda','CR-V',2021,46000,25995.00,'Available','Coeur d\'Alene','ID','Compact SUV','/images/crv.jpg','Black','Gas','Automatic'),('D8FD510EAD58111F1','Chevrolet','Tahoe',2020,67000,38995.00,'Available','Spokane','WA','Full-Size SUV','/images/tahoe.jpg','Black','Gas','Automatic'),('D8FD51202D58111F1','Ford','F-150',2021,49000,34995.00,'Available','Lewiston','ID','Pickup','/images/f150.jpg','Blue','Gas','Automatic'),('D8FD5132ED58111F1','Chevrolet','Silverado 2500HD',2019,81000,36500.00,'Available','Spokane','WA','Heavy-Duty Pickup','/images/silverado.jpg','Silver','Diesel','Automatic'),('D8FD51446D58111F1','Toyota','Tacoma',2022,33000,32995.00,'Available','Pullman','WA','Pickup','/images/tacoma.jpg','Green','Gas','Automatic'),('DEMO0000000000001','Toyota','Camry',2021,42000,22995.00,'Sold','Moscow','ID','Sedan','/images/camry.jpg','Silver','Gas','Automatic');
+/*!40000 ALTER TABLE `listing` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Dumping data for table `Customer`
+-- Dumping data for table `sale`
 --
 
-LOCK TABLES `Customer` WRITE;
-/*!40000 ALTER TABLE `Customer` DISABLE KEYS */;
-INSERT INTO `Customer` VALUES (1,'John','Doe','208-111-2222','john.doe@test.com');
-/*!40000 ALTER TABLE `Customer` ENABLE KEYS */;
+LOCK TABLES `sale` WRITE;
+/*!40000 ALTER TABLE `sale` DISABLE KEYS */;
+INSERT INTO `sale` VALUES (1,'DEMO0000000000001',1,1,22500.00,'2026-10-31');
+/*!40000 ALTER TABLE `sale` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Dumping data for table `Sale`
+-- Dumping data for table `salesperson`
 --
 
-LOCK TABLES `Sale` WRITE;
-/*!40000 ALTER TABLE `Sale` DISABLE KEYS */;
-INSERT INTO `Sale` VALUES (1,'DEMO0000000000001',1,1,22500.00,'2026-10-31');
-/*!40000 ALTER TABLE `Sale` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `Salesperson`
---
-
-LOCK TABLES `Salesperson` WRITE;
-/*!40000 ALTER TABLE `Salesperson` DISABLE KEYS */;
-INSERT INTO `Salesperson` VALUES (1,'Eliot','Bicak','208-800-1122','eliot.bicak@test.com');
-/*!40000 ALTER TABLE `Salesperson` ENABLE KEYS */;
+LOCK TABLES `salesperson` WRITE;
+/*!40000 ALTER TABLE `salesperson` DISABLE KEYS */;
+INSERT INTO `salesperson` VALUES (1,'Eliot','Bicak','208-800-1122','eliot.bicak@test.com');
+/*!40000 ALTER TABLE `salesperson` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
