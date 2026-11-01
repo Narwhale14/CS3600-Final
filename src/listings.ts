@@ -1,10 +1,27 @@
-// temp hardcoded
-export const listings = [
-  { id: 1, title: 'c8 corvette', price: 1, city: "Seattle", state: "WA", image: '/zr1x.png' },
-  { id: 2, title: 'ninja kawasaki', price: 5000, city: "Seattle", state: "WA", image: '/zr1x.png' },
-  { id: 3, title: 's1000rr', price: 20000, city: "Seattle", state: "WA", image: '/zr1x.png' },
-  { id: 4, title: 'bugatti tourbillion', price: 5000000, city: "Seattle", state: "WA", image: '/zr1x.png' },
-  { id: 5, title: 'car', price: 2, city: "Seattle", state: "WA", image: '/zr1x.png' },
-  { id: 6, title: 'another car', price: 3, city: "Seattle", state: "WA", image: '/zr1x.png' },
-  { id: 7, title: 'truck', price: 5000000, city: "Seattle", state: "WA", image: '/zr1x.png' },
-];
+export interface Listing {
+  vin: string,
+  make: string,
+  model: string,
+  year: number,
+  mileage: number,
+  listing_price: string, // decimal in php is string
+  status: 'Available' | 'Sold' | 'Pending',
+  city: string,
+  state: string,
+  body_type: string,
+  image_url: string | null,
+  color: string,
+  fuel_type: string,
+  transmission: string,
+  created_at: string
+};
+
+export async function getListings(): Promise<Listing[]> {
+  const res = await fetch('/api/listings');
+  return res.json();
+}
+
+export async function getListing(vin: string): Promise<Listing | null> {
+  const res = await fetch(`/api/listings?vin=${encodeURIComponent(vin)}`);
+  return res.json();
+}

@@ -8,7 +8,9 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build"
+    "type-check": "vue-tsc --build",
+    "api": "php -S localhost:8000 app/index.php",
+    "full": "run-p api dev"
   },
   "dependencies": {
     "primeicons": "^8.0.2",
