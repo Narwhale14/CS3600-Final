@@ -24,23 +24,6 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `WheelSteal` /*!40100 DEFAULT CHARACTER
 USE `WheelSteal`;
 
 --
--- Table structure for table `customer`
---
-
-DROP TABLE IF EXISTS `customer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `customer` (
-  `customer_id` int NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(50) NOT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`customer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `listing`
 --
 
@@ -48,7 +31,8 @@ DROP TABLE IF EXISTS `listing`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `listing` (
-  `vin` char(17) NOT NULL,
+  `vin` char(17) NOT NULL PRIMARY KEY,
+  `seller_id` int NOT NULL,
   `make` varchar(50) NOT NULL,
   `model` varchar(50) NOT NULL,
   `year` smallint unsigned NOT NULL,
@@ -59,11 +43,13 @@ CREATE TABLE `listing` (
   `state` char(2) NOT NULL,
   `body_type` enum('Sedan','Hatchback','Coupe','Full-Size SUV','Mid-Size SUV','Compact SUV','Pickup','Heavy-Duty Pickup','Commercial Truck') NOT NULL,
   `image_url` varchar(500) DEFAULT NULL,
-  `color` varchar(50) NOT NULL,
+  `exterior_color` varchar(50) NOT NULL,
+  `interior_color` varchar(50) NOT NULL,
   `fuel_type` enum('Diesel','Gas','Hybrid','EV') NOT NULL,
   `transmission` enum('Manual','Automatic') NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`vin`),
+  KEY `seller_id` (`seller_id`),
+  CONSTRAINT `listing_ibfk_1` FOREIGN KEY (`seller_id`) REFERENCES `user` (`user_id`),
   CONSTRAINT `listing_chk_1` CHECK ((`listing_price` >= 0))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -78,36 +64,33 @@ DROP TABLE IF EXISTS `sale`;
 CREATE TABLE `sale` (
   `sale_id` int NOT NULL AUTO_INCREMENT,
   `vin` char(17) NOT NULL,
-  `customer_id` int NOT NULL,
-  `salesperson_id` int NOT NULL,
+  `buyer_id` int NOT NULL,
   `sale_price` decimal(10,2) NOT NULL,
   `sale_date` date NOT NULL,
   PRIMARY KEY (`sale_id`),
   UNIQUE KEY `vin` (`vin`),
-  KEY `customer_id` (`customer_id`),
-  KEY `salesperson_id` (`salesperson_id`),
+  KEY `buyer_id` (`buyer_id`),
   CONSTRAINT `sale_ibfk_1` FOREIGN KEY (`vin`) REFERENCES `listing` (`vin`),
-  CONSTRAINT `sale_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
-  CONSTRAINT `sale_ibfk_3` FOREIGN KEY (`salesperson_id`) REFERENCES `salesperson` (`salesperson_id`),
+  CONSTRAINT `sale_ibfk_2` FOREIGN KEY (`buyer_id`) REFERENCES `user` (`user_id`),
   CONSTRAINT `sale_chk_1` CHECK ((`sale_price` >= 0))
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `salesperson`
+-- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `salesperson`;
+DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `salesperson` (
-  `salesperson_id` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `user` (
+  `user_id` int NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`salesperson_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
