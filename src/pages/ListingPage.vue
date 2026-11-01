@@ -1,24 +1,43 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { listings } from '../listings'
-import { formatNumber } from '../utils'
+import { computed, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import { getListing, type Listing } from '../listings';
+import { formatNumber } from '../utils';
 
-const route = useRoute()
-const listing = computed(() => listings.find((l) => l.id === Number(route.params.id)))
+const route = useRoute();
+const listing = ref<Listing | null>(null);
+
+watch(() => route.params.id, async (vin) => {
+  listing.value = await getListing(String(vin));
+}, { immediate: true });
+
+const listedAgo = computed(() => {
+  if(!listing.value) return '';
+
+  const days = Math.floor((Date.now() - Date.parse(listing.value.created_at.replace(' ', 'T'))) / 86400000);
+  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+  
+  if(days < 7) 
+    return rtf.format(-days, 'day');
+  if(days < 30) 
+    return rtf.format(-Math.floor(days / 7), 'week');
+  
+  return rtf.format(-Math.floor(days / 30), 'month');
+})
 </script>
 
 <template>
   <div v-if="listing" class="listing">
     <div class="image-panel">
-      <img class="backdrop" :src="listing.image"/>
-      <img class="photo" :src="listing.image"/>
+      <img class="backdrop" :src="listing.image_url ?? undefined"/>
+      <img class="photo" :src="listing.image_url ?? undefined" :alt="listing.title"/>
     </div>
 
     <div class="details-panel">
-      <div>{{ listing.title }}</div>
-      <div>${{ formatNumber(listing.price) }}</div>
-      <div>Listed 3 weeks ago in {{ listing.city }}, {{ listing.state }}</div>
+      <h1>{{ listing.title }}</h1>
+      <div>${{ formatNumber(Number(listing.listing_price)) }}</div>
+      <div>Listed {{ listedAgo }} in {{ listing.city }}, {{ listing.state }}</div>
+      <p v-if="listing.description" class="description">{{ listing.description }}</p>
     </div>
   </div>
 </template>
@@ -61,5 +80,9 @@ const listing = computed(() => listings.find((l) => l.id === Number(route.params
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.description {
+  white-space: pre-line;
 }
 </style>

@@ -1,5 +1,7 @@
 export interface Listing {
   vin: string,
+  title: string,
+  description: string | null,
   make: string,
   model: string,
   year: number,
@@ -10,7 +12,8 @@ export interface Listing {
   state: string,
   body_type: string,
   image_url: string | null,
-  color: string,
+  exterior_color: string,
+  interior_color: string,
   fuel_type: string,
   transmission: string,
   created_at: string

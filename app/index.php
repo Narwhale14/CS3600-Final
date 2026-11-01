@@ -1,9 +1,7 @@
 <?php
+$db = require __DIR__ . '/db.php';
 
 header('Content-Type: application/json');
-
-$db = new PDO('mysql:host=127.0.0.1;dbname=WheelSteal;charset=utf8mb4', 'root', '');
-$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 // GET /api/listings?vin=
 if(isset($_GET['vin'])) {
