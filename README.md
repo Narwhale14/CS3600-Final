@@ -33,7 +33,7 @@ brew install node php mysql@8.0
    mysql -u root -p < database/seed.sql
    ```
 
-   Leave off `-p` if your MySQL root user has no password. Running both again at any time resets the database to the demo data.
+   Leave off `-p` if your MySQL root user has no password. To reset the database to the demo data later, run `npm run db:clear` then `npm run db:seed`.
 
 4. **Add your database login**
 
@@ -59,4 +59,5 @@ To check the API on its own, open http://localhost:5173/api/cars. You should see
 
 - `npm run build`: type-check and build for production into `dist/`
 - `npm run type-check`: type-check only
-- `npm run db:reset`: clears and resets db (DANGEROUS only use if schema updated)
+- `npm run db:clear`: deletes the database and recreates it with empty tables from `schema.sql` (DANGEROUS, deletes all data)
+- `npm run db:seed`: loads the demo data. Only works on empty tables, so run `db:clear` first
