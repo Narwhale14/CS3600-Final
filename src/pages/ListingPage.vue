@@ -12,13 +12,13 @@ watch(() => route.params.id, async (vin) => {
 }, { immediate: true });
 
 const listedDate = computed(() => {
-  if(!listing.value) return ''
-  return new Date(listing.value.created_at.replace(' ', 'T')).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })
-})
+  if(!listing.value) return '';
+  return new Date(listing.value.created_at.replace(' ', 'T')).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' });
+});
 
 const listedMiles = computed(() => {
   if(!listing.value) return 0;
-  return new Intl.NumberFormat('en-US').format(listing.value.mileage)
+  return new Intl.NumberFormat('en-US').format(listing.value.mileage);
 });
 </script>
 
