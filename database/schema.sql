@@ -1,57 +1,78 @@
+-- WheelSteal: original dealership design + expanded vehicle attributes + customer accounts/saved cars.
+-- Intended for a NEW EMPTY WheelSteal database. Does not drop existing tables.
+-- If WheelSteal already exists, create a separate test database first.
 CREATE DATABASE IF NOT EXISTS `WheelSteal` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 USE `WheelSteal`;
 
-DROP TABLE IF EXISTS `sale`;
-DROP TABLE IF EXISTS `listing`;
-DROP TABLE IF EXISTS `user`;
+CREATE TABLE `BodyType` (
+  `BodyTypeID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `TypeName` VARCHAR(50) NOT NULL UNIQUE,
+  `ParentTypeID` INT DEFAULT NULL,
+  CONSTRAINT `fk_bodytype_parent` FOREIGN KEY (`ParentTypeID`) REFERENCES `BodyType` (`BodyTypeID`)
+) ENGINE=InnoDB;
 
-CREATE TABLE `user` (
-  `user_id` int NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(50) NOT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`user_id`)
-);
+CREATE TABLE `Car` (
+  `VIN` CHAR(17) NOT NULL PRIMARY KEY,
+  `Make` VARCHAR(50) NOT NULL,
+  `Model` VARCHAR(50) NOT NULL,
+  `Year` SMALLINT UNSIGNED NOT NULL,
+  `Mileage` INT UNSIGNED NOT NULL,
+  `ListingPrice` DECIMAL(10,2) NOT NULL,
+  `Status` ENUM('Available','Sold','Pending') NOT NULL DEFAULT 'Available',
+  `City` VARCHAR(100) NOT NULL,
+  `State` CHAR(2) NOT NULL,
+  `BodyTypeID` INT NOT NULL,
+  `ImageURL` VARCHAR(500) DEFAULT NULL,
+  `Color` VARCHAR(50) NOT NULL,
+  `FuelType` ENUM('Diesel','Gas','Hybrid','EV','Other','Unknown') NOT NULL,
+  `Transmission` ENUM('Manual','Automatic','Other','Unknown') NOT NULL,
+  `Title` VARCHAR(100) NOT NULL,
+  `Description` TEXT,
+  `Owners` INT UNSIGNED NOT NULL,
+  `Papers` ENUM('Clean','Rebuilt','Salvage','Flood','Lemon','Junk','Other','Unknown') NOT NULL,
+  `InteriorColor` VARCHAR(50) NOT NULL,
+  `Drivetrain` ENUM('FWD','RWD','AWD','4WD','Other','Unknown') NOT NULL,
+  `CreatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT `fk_car_bodytype` FOREIGN KEY (`BodyTypeID`) REFERENCES `BodyType` (`BodyTypeID`),
+  CONSTRAINT `chk_car_price` CHECK (`ListingPrice` >= 0)
+) ENGINE=InnoDB;
 
-CREATE TABLE `listing` (
-  `vin` char(17) NOT NULL PRIMARY KEY,
-  `title` varchar(100) NOT NULL,
-  `description` text,
-  `seller_id` int NOT NULL,
-  `make` varchar(50) NOT NULL,
-  `model` varchar(50) NOT NULL,
-  `year` smallint unsigned NOT NULL,
-  `mileage` int unsigned NOT NULL,
-  `owners` int unsigned NOT NULL,
-  `papers` enum('Clean','Rebuilt','Salvage','Flood','Lemon','Junk','Other','Unknown') NOT NULL,
-  `listing_price` decimal(10,2) NOT NULL,
-  `status` enum('Available','Sold', 'Pending') NOT NULL DEFAULT 'Available',
-  `city` varchar(100) NOT NULL,
-  `state` char(2) NOT NULL,
-  `body_type` enum('Sedan','Hatchback','Coupe','Full-Size SUV','Mid-Size SUV','Compact SUV','Pickup','Heavy-Duty Pickup','Commercial Truck','Other','Unknown') NOT NULL,
-  `image_url` varchar(500) DEFAULT NULL,
-  `exterior_color` varchar(50) NOT NULL,
-  `interior_color` varchar(50) NOT NULL,
-  `fuel_type` enum('Diesel','Gas','Hybrid','EV','Other','Unknown') NOT NULL,
-  `transmission` enum('Manual','Automatic','Other','Unknown') NOT NULL,
-  `drivetrain` enum('FWD','RWD','AWD','4WD','Other','Unknown') NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  KEY `seller_id` (`seller_id`),
-  CONSTRAINT `listing_ibfk_1` FOREIGN KEY (`seller_id`) REFERENCES `user` (`user_id`),
-  CONSTRAINT `listing_chk_1` CHECK ((`listing_price` >= 0))
-);
+CREATE TABLE `Customer` (
+  `CustomerID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `FirstName` VARCHAR(50) NOT NULL,
+  `LastName` VARCHAR(50) NOT NULL,
+  `Phone` VARCHAR(20) DEFAULT NULL,
+  `Email` VARCHAR(100) DEFAULT NULL UNIQUE,
+  `PasswordHash` VARCHAR(255) DEFAULT NULL
+) ENGINE=InnoDB;
 
-CREATE TABLE `sale` (
-  `sale_id` int NOT NULL AUTO_INCREMENT,
-  `vin` char(17) NOT NULL,
-  `buyer_id` int NOT NULL,
-  `sale_price` decimal(10,2) NOT NULL,
-  `sale_date` date NOT NULL,
-  PRIMARY KEY (`sale_id`),
-  UNIQUE KEY `vin` (`vin`),
-  KEY `buyer_id` (`buyer_id`),
-  CONSTRAINT `sale_ibfk_1` FOREIGN KEY (`vin`) REFERENCES `listing` (`vin`),
-  CONSTRAINT `sale_ibfk_2` FOREIGN KEY (`buyer_id`) REFERENCES `user` (`user_id`),
-  CONSTRAINT `sale_chk_1` CHECK ((`sale_price` >= 0))
-);
+CREATE TABLE `Salesperson` (
+  `SalespersonID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `FirstName` VARCHAR(50) NOT NULL,
+  `LastName` VARCHAR(50) NOT NULL,
+  `Phone` VARCHAR(20) DEFAULT NULL,
+  `Email` VARCHAR(100) DEFAULT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE `Sale` (
+  `SaleID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `VIN` CHAR(17) NOT NULL UNIQUE,
+  `CustomerID` INT NOT NULL,
+  `SalespersonID` INT NOT NULL,
+  `SalePrice` DECIMAL(10,2) NOT NULL,
+  `SaleDate` DATE NOT NULL,
+  CONSTRAINT `fk_sale_car` FOREIGN KEY (`VIN`) REFERENCES `Car` (`VIN`),
+  CONSTRAINT `fk_sale_customer` FOREIGN KEY (`CustomerID`) REFERENCES `Customer` (`CustomerID`),
+  CONSTRAINT `fk_sale_salesperson` FOREIGN KEY (`SalespersonID`) REFERENCES `Salesperson` (`SalespersonID`),
+  CONSTRAINT `chk_sale_price` CHECK (`SalePrice` >= 0)
+) ENGINE=InnoDB;
+
+-- Customer favorites: many-to-many relationship between Customer and Car.
+CREATE TABLE `Saved` (
+  `CustomerID` INT NOT NULL,
+  `VIN` CHAR(17) NOT NULL,
+  `SavedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`CustomerID`, `VIN`),
+  CONSTRAINT `fk_saved_customer` FOREIGN KEY (`CustomerID`) REFERENCES `Customer` (`CustomerID`) ON DELETE CASCADE,
+  CONSTRAINT `fk_saved_car` FOREIGN KEY (`VIN`) REFERENCES `Car` (`VIN`) ON DELETE CASCADE
+) ENGINE=InnoDB;
