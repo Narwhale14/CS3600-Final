@@ -9,6 +9,8 @@
 	--accent-red: #fe6467;
 	--accent-gradient: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange) 55%, var(--accent-red));
 	--canvas-dark: color-mix(in oklab, var(--beige), black 10%);
+
+	--logo-width: 18rem;
 }
 
 body {

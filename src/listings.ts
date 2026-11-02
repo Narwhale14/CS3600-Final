@@ -8,20 +8,27 @@ export interface Listing {
   year: number,
   mileage: number,
   owners: number,
-  papers: 'Clean' | 'Rebuilt' | 'Salvage' | 'Flood' | 'Lemon' | 'Junk' | 'Other' | 'Unknown',
-  listing_price: string, // decimal in php is string
-  status: 'Available' | 'Sold' | 'Pending',
+  papers: typeof PAPERS[number],
+  listing_price: string,
+  status: typeof STATUSES[number],
   city: string,
   state: string,
-  body_type: 'Sedan' | 'Hatchback' | 'Coupe' | 'Full-Size SUV' | 'Mid-Size SUV' | 'Compact SUV' | 'Pickup' | 'Heavy-Duty Pickup' | 'Commercial Truck' | 'Other' | 'Unknown',
+  body_type: typeof BODY_TYPES[number],
   image_url: string | null,
   exterior_color: string,
   interior_color: string,
-  fuel_type: 'Diesel' | 'Gas' | 'Hybrid' | 'EV' | 'Other' | 'Unknown',
-  transmission: 'Manual' | 'Automatic' | 'Other' | 'Unknown',
-  drivetrain: 'FWD' | 'RWD' | 'AWD' | '4WD' | 'Other' | 'Unknown',
+  fuel_type: typeof FUEL_TYPES[number],
+  transmission: typeof TRANSMISSIONS[number],
+  drivetrain: typeof DRIVETRAINS[number],
   created_at: string
 };
+
+export const PAPERS = ['Clean', 'Rebuilt', 'Salvage', 'Flood', 'Lemon', 'Junk', 'Other', 'Unknown'] as const;
+export const STATUSES = ['Available', 'Sold', 'Pending'] as const;
+export const BODY_TYPES = ['Sedan', 'Hatchback', 'Coupe', 'Full-Size SUV', 'Mid-Size SUV', 'Compact SUV', 'Pickup', 'Heavy-Duty Pickup', 'Commercial Truck', 'Other', 'Unknown'] as const;
+export const FUEL_TYPES = ['Diesel', 'Gas', 'Hybrid', 'EV', 'Other', 'Unknown'] as const;
+export const TRANSMISSIONS = ['Manual', 'Automatic', 'Other', 'Unknown'] as const;
+export const DRIVETRAINS = ['FWD', 'RWD', 'AWD', '4WD', 'Other', 'Unknown'] as const;
 
 export async function getListings(): Promise<Listing[]> {
   const res = await fetch('/api/listings');

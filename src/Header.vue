@@ -20,6 +20,8 @@
   display: flex;
   flex-shrink: 0;
   height: 5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1rem solid var(--gray);
 }
 
 .logo {
@@ -28,9 +30,12 @@
   margin: 0;
   padding: 0 3rem 0 1rem;
   background: var(--accent-gradient);
+  width: var(--logo-width);
   color: var(--gray);
   font-weight: bold;
   clip-path: polygon(0 0, calc(100% - 2rem) 0, 100% 100%, 0 100%);
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .header-nav {
