@@ -3,15 +3,15 @@
 -- Demo VINs are synthetic identifiers, not genuine manufacturer VINs.
 USE `WheelSteal`;
 
-INSERT INTO `BodyType` VALUES (1,'Body Type',NULL),(2,'Car',1),(3,'SUV',1),(4,'Truck',1),(5,'Sedan',2),(6,'Hatchback',2),(7,'Coupe',2),(8,'Full-Size SUV',3),(9,'Mid-Size SUV',3),(10,'Compact SUV',3),(11,'Pickup',4),(12,'Heavy-Duty Pickup',4),(13,'Commercial Truck',4);
+INSERT INTO `body_type` VALUES (1,'Body Type',NULL),(2,'Car',1),(3,'SUV',1),(4,'Truck',1),(5,'Sedan',2),(6,'Hatchback',2),(7,'Coupe',2),(8,'Full-Size SUV',3),(9,'Mid-Size SUV',3),(10,'Compact SUV',3),(11,'Pickup',4),(12,'Heavy-Duty Pickup',4),(13,'Commercial Truck',4);
 
-INSERT INTO `Customer` (`CustomerID`,`FirstName`,`LastName`,`Phone`,`Email`) VALUES
+INSERT INTO `customer` (`customer_id`,`first_name`,`last_name`,`phone`,`email`) VALUES
 (1,'John','Doe','208-111-2222','john.doe@test.com');
 
-INSERT INTO `Salesperson` (`SalespersonID`,`FirstName`,`LastName`,`Phone`,`Email`) VALUES
+INSERT INTO `salesperson` (`salesperson_id`,`first_name`,`last_name`,`phone`,`email`) VALUES
 (1,'Eliot','Bicak','208-800-1122','eliot.bicak@test.com');
 
-INSERT INTO `Car` (`VIN`,`Make`,`Model`,`Year`,`Mileage`,`ListingPrice`,`Status`,`City`,`State`,`BodyTypeID`,`ImageURL`,`Color`,`FuelType`,`Transmission`,`Title`,`Description`,`Owners`,`Papers`,`InteriorColor`,`Drivetrain`,`CreatedAt`) VALUES
+INSERT INTO `car` (`vin`,`make`,`model`,`year`,`mileage`,`listing_price`,`status`,`city`,`state`,`body_type_id`,`image_url`,`exterior_color`,`fuel_type`,`transmission`,`title`,`description`,`owners`,`papers`,`interior_color`,`drivetrain`,`created_at`) VALUES
 ('D8FD4F95CD58111F1','Honda','Civic',2022,28500,24500.00,'Available','Moscow','ID',5,'/images/civic.jpg','Blue','Gas','Automatic','2022 Honda Civic - Clean, Low Miles','One owner, no accidents. Regular oil changes and new tires last spring. Great on gas.',1,'Clean','Black','FWD','2026-10-31 00:00:00'),
 ('D8FD50686D58111F1','Ford','Mustang',2020,36000,29995.00,'Available','Pullman','WA',7,'/images/mustang.jpg','Red','Gas','Manual','2020 Ford Mustang 6-Speed Manual','Fun to drive manual. Recently serviced, clean title. Some light scratches on the rear bumper.',2,'Clean','Black','RWD','2026-10-31 00:00:00'),
 ('D8FD50924D58111F1','Volkswagen','Golf',2019,54000,17995.00,'Available','Spokane','WA',6,'/images/golf.jpg','White','Gas','Automatic','2019 VW Golf Hatchback','Reliable daily driver with plenty of cargo space. Heated seats and Apple CarPlay.',3,'Rebuilt','Gray','FWD','2026-10-31 00:00:00'),
@@ -23,9 +23,9 @@ INSERT INTO `Car` (`VIN`,`Make`,`Model`,`Year`,`Mileage`,`ListingPrice`,`Status`
 ('D8FD51446D58111F1','Toyota','Tacoma',2022,33000,32995.00,'Available','Pullman','WA',11,'/images/tacoma.jpg','Green','Gas','Automatic','2022 Toyota Tacoma TRD','Off-road package. No rust, garage kept.',1,'Clean','Black','4WD','2026-10-31 00:00:00'),
 ('DEMO0000000000001','Toyota','Camry',2021,42000,22995.00,'Sold','Moscow','ID',5,'/images/camry.jpg','Silver','Gas','Automatic','2021 Toyota Camry SE','Comfortable commuter with low maintenance costs. Recently detailed.',1,'Clean','Beige','FWD','2026-10-31 00:00:00');
 
-INSERT INTO `Sale` (`SaleID`,`VIN`,`CustomerID`,`SalespersonID`,`SalePrice`,`SaleDate`) VALUES
+INSERT INTO `sale` (`sale_id`,`vin`,`customer_id`,`salesperson_id`,`sale_price`,`sale_date`) VALUES
 (1,'DEMO0000000000001',1,1,22500.00,'2026-10-31');
 
 -- No saved favorites are seeded: customers can save cars after login.
--- PasswordHash is NULL for imported demo customers. Registration/login must
+-- password_hash is NULL for imported demo customers. Registration/login must
 -- populate a hash using PHP password_hash(), never a plaintext password.
