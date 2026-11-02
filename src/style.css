@@ -2,8 +2,15 @@
 @import '@mdi/font/css/materialdesignicons.css';
 
 :root {
-	color-scheme: dark;
-	--canvas-dark: color-mix(in oklab, Canvas, black 10%);
+	--beige: #e2dfd9;
+	--gray: #67615d;
+	--accent-yellow: #f9d65c;
+	--accent-orange: #f2ac3c;
+	--accent-red: #fe6467;
+	--accent-gradient: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange) 55%, var(--accent-red));
+	--canvas-dark: color-mix(in oklab, var(--beige), black 10%);
+
+	--logo-width: 18rem;
 }
 
 body {
@@ -11,10 +18,13 @@ body {
 	line-height: 1.5;
 	font-weight: 400;
 	margin: 0;
+
+	background-color: var(--beige);
 }
 
 button, input, select, textarea {
 	font: inherit;
+	border: none;
 }
 
 button:focus, input:focus {

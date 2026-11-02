@@ -10,7 +10,8 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "api": "php -S localhost:8000 app/index.php",
-    "full": "run-p api dev"
+    "full": "run-p api dev",
+    "db:reset": "mysql -u root -p -e \"DROP DATABASE IF EXISTS WheelSteal; source database/schema.sql; source database/seed.sql;\""
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",

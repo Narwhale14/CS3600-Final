@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { getListing, type Listing } from '../listings';
+import { getCar, type Cars } from '../cars';
 import { formatNumber } from '../utils';
 
 const route = useRoute();
-const listing = ref<Listing | null>(null);
+const listing = ref<Cars | null>(null);
 
 watch(() => route.params.id, async (vin) => {
-  listing.value = await getListing(String(vin));
+  listing.value = await getCar(String(vin));
 }, { immediate: true });
 
 const listedDate = computed(() => {

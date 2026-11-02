@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import Card from '../Card.vue'
+import BrowserFilters from '../BrowserFilters.vue'
 import { ref, onMounted } from 'vue';
-import { getListings, type Listing } from '../listings.ts';
+import { getCars, type Cars } from '../cars.ts';
 
-const listings = ref<Listing[]>([]);
+const listings = ref<Cars[]>([]);
 onMounted(async () => {
-  listings.value = await getListings();
+  listings.value = await getCars();
 });
 </script>
 
@@ -15,6 +16,8 @@ onMounted(async () => {
       <Card :title="listing.title" :price="Number(listing.listing_price)" :city="listing.city" :state="listing.state" :image="listing.image_url ?? undefined"></Card>
     </RouterLink>
   </div>
+
+  <BrowserFilters></BrowserFilters>
 </template>
 
 <style scoped>
@@ -23,6 +26,7 @@ onMounted(async () => {
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   gap: 1.5rem 0.75rem;
   padding: 3rem;
+  margin-left: var(--logo-width);
 }
 
 .link {
