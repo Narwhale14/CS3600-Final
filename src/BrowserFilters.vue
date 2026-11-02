@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BODY_TYPES, PAPERS, FUEL_TYPES, TRANSMISSIONS, DRIVETRAINS, STATUSES } from './listings.ts';
+import { BODY_TYPES, PAPERS, FUEL_TYPES, TRANSMISSIONS, DRIVETRAINS, STATUSES } from './cars.ts';
 
 const dropdowns = [
   { label: 'Body Style', options: BODY_TYPES },

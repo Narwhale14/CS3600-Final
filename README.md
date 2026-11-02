@@ -53,9 +53,10 @@ This starts the PHP API on `localhost:8000` and the Vite dev server on `localhos
 
 To run them separately, use `npm run api` and `npm run dev` in two terminals.
 
-To check the API on its own, open http://localhost:5173/api/listings. You should see the listings as JSON.
+To check the API on its own, open http://localhost:5173/api/cars. You should see the cars as JSON.
 
 ## Other commands
 
 - `npm run build`: type-check and build for production into `dist/`
 - `npm run type-check`: type-check only
+- `npm run db:reset`: clears and resets db (DANGEROUS only use if schema updated)

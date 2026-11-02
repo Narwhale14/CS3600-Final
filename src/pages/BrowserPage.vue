@@ -2,11 +2,11 @@
 import Card from '../Card.vue'
 import BrowserFilters from '../BrowserFilters.vue'
 import { ref, onMounted } from 'vue';
-import { getListings, type Listing } from '../listings.ts';
+import { getCars, type Cars } from '../cars.ts';
 
-const listings = ref<Listing[]>([]);
+const listings = ref<Cars[]>([]);
 onMounted(async () => {
-  listings.value = await getListings();
+  listings.value = await getCars();
 });
 </script>
 

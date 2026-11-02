@@ -1,4 +1,4 @@
-export interface Listing {
+export interface Cars {
   vin: string,
   title: string,
   description: string | null,
@@ -30,12 +30,12 @@ export const FUEL_TYPES = ['Diesel', 'Gas', 'Hybrid', 'EV', 'Other', 'Unknown'] 
 export const TRANSMISSIONS = ['Manual', 'Automatic', 'Other', 'Unknown'] as const;
 export const DRIVETRAINS = ['FWD', 'RWD', 'AWD', '4WD', 'Other', 'Unknown'] as const;
 
-export async function getListings(): Promise<Listing[]> {
-  const res = await fetch('/api/listings');
+export async function getCars(): Promise<Cars[]> {
+  const res = await fetch('/api/cars');
   return res.json();
 }
 
-export async function getListing(vin: string): Promise<Listing | null> {
-  const res = await fetch(`/api/listings?vin=${encodeURIComponent(vin)}`);
+export async function getCar(vin: string): Promise<Cars | null> {
+  const res = await fetch(`/api/cars?vin=${encodeURIComponent(vin)}`);
   return res.json();
 }
