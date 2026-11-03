@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { reactive, watch } from 'vue';
-import {
-  BODY_TYPES, PAPERS, FUEL_TYPES,
-  TRANSMISSIONS, DRIVETRAINS, STATUSES,
-  type CarFilters
-} from './cars.ts';
+import { BODY_TYPES, PAPERS, FUEL_TYPES, TRANSMISSIONS, DRIVETRAINS, STATUSES, type CarFilters } from './cars.ts';
 import { formatNumber } from './utils.ts';
 
 const filters = defineModel<CarFilters>({ required: true });
@@ -59,27 +55,14 @@ function digitsOnly(event: KeyboardEvent) {
 }
 
 // Update filter state whenever sliders move.
-watch(
-  [
-    () => price.low,
-    () => price.high,
-    () => year.low,
-    () => year.high
-  ],
-  () => {
-    filters.value = {
-      ...filters.value,
-      minPrice: price.low === price.min
-        ? undefined : toPrice(price.low),
-      maxPrice: price.high === price.max
-        ? undefined : toPrice(price.high),
-      minYear: year.low === year.min
-        ? undefined : year.low,
-      maxYear: year.high === year.max
-        ? undefined : year.high
+watch([() => price.low, () => price.high, () => year.low, () => year.high], () => {
+    filters.value = { ...filters.value, 
+      minPrice: price.low === price.min ? undefined : toPrice(price.low),
+      maxPrice: price.high === price.max ? undefined : toPrice(price.high),
+      minYear: year.low === year.min ? undefined : year.low,
+      maxYear: year.high === year.max ? undefined : year.high
     };
-  }
-);
+});
 
 function clearFilters() {
   price.low = price.min;
@@ -101,23 +84,8 @@ function clearFilters() {
         <span>${{ formatNumber(toPrice(price.high), 0) }}</span>
       </div>
       <div class="range-container">
-        <input
-          type="range"
-          :min="price.min"
-          :max="price.max"
-          step="any"
-          :value="price.low"
-          @input="setLow(price, $event)"
-          :class="{ 'on-top': lowOnTop(price) }"
-        >
-        <input
-          type="range"
-          :min="price.min"
-          :max="price.max"
-          step="any"
-          :value="price.high"
-          @input="setHigh(price, $event)"
-        >
+        <input type="range" :min="price.min" :max="price.max" step="any" :value="price.low" @input="setLow(price, $event)" :class="{ 'on-top': lowOnTop(price) }">
+        <input type="range" :min="price.min" :max="price.max" step="any" :value="price.high" @input="setHigh(price, $event)">
       </div>
     </div>
 
@@ -128,23 +96,8 @@ function clearFilters() {
         <span>{{ year.high }}</span>
       </div>
       <div class="range-container">
-        <input
-          type="range"
-          :min="year.min"
-          :max="year.max"
-          step="1"
-          :value="year.low"
-          @input="setLow(year, $event)"
-          :class="{ 'on-top': lowOnTop(year) }"
-        >
-        <input
-          type="range"
-          :min="year.min"
-          :max="year.max"
-          step="1"
-          :value="year.high"
-          @input="setHigh(year, $event)"
-        >
+        <input type="range" :min="year.min" :max="year.max" step="1" :value="year.low" @input="setLow(year, $event)" :class="{ 'on-top': lowOnTop(year) }">
+        <input type="range" :min="year.min" :max="year.max" step="1" :value="year.high" @input="setHigh(year, $event)">
       </div>
     </div>
 
@@ -160,33 +113,20 @@ function clearFilters() {
 
     <label>
       Max Mileage
-      <input
-        v-model="filters.maxMileage"
-        type="number"
-        min="0"
-        @keydown="digitsOnly"
-      >
+      <input v-model="filters.maxMileage" type="number" min="0" @keydown="digitsOnly">
     </label>
 
     <label>
       Max Owners
       <input
-        v-model="filters.maxOwners"
-        type="number"
-        min="0"
-        @keydown="digitsOnly"
-      >
+        v-model="filters.maxOwners" type="number" min="0" @keydown="digitsOnly">
     </label>
 
     <label v-for="d in dropdowns" :key="d.key">
       {{ d.label }}
       <select v-model="filters[d.key]">
         <option value="">Any</option>
-        <option
-          v-for="option in d.options"
-          :key="option"
-          :value="option"
-        >
+        <option v-for="option in d.options" :key="option" :value="option">
           {{ option }}
         </option>
       </select>
