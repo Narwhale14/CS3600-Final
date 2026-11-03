@@ -1,18 +1,29 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
-import { BODY_TYPES, PAPERS, FUEL_TYPES, TRANSMISSIONS, DRIVETRAINS, STATUSES } from './cars.ts';
+import { reactive, watch } from 'vue';
+import {
+  BODY_TYPES, PAPERS, FUEL_TYPES,
+  TRANSMISSIONS, DRIVETRAINS, STATUSES,
+  type CarFilters
+} from './cars.ts';
 import { formatNumber } from './utils.ts';
 
-const dropdowns = [
-  { label: 'Body Style', options: BODY_TYPES },
-  { label: 'Fuel Type', options: FUEL_TYPES },
-  { label: 'Transmission', options: TRANSMISSIONS },
-  { label: 'Drivetrain', options: DRIVETRAINS },
-  { label: 'Status', options: STATUSES },
-  { label: 'Title', options: PAPERS },
-];
+const filters = defineModel<CarFilters>({ required: true });
 
-interface Range { min: number, max: number, low: number, high: number };
+const dropdowns = [
+  { label: 'Body Style', key: 'bodyType', options: BODY_TYPES },
+  { label: 'Fuel Type', key: 'fuelType', options: FUEL_TYPES },
+  { label: 'Transmission', key: 'transmission', options: TRANSMISSIONS },
+  { label: 'Drivetrain', key: 'drivetrain', options: DRIVETRAINS },
+  { label: 'Status', key: 'status', options: STATUSES },
+  { label: 'Title', key: 'papers', options: PAPERS }
+] as const;
+
+interface Range {
+  min: number;
+  max: number;
+  low: number;
+  high: number;
+}
 
 function range(min: number, max: number): Range {
   return reactive({ min, max, low: min, high: max });
@@ -42,7 +53,40 @@ function lowOnTop(range: Range) {
 }
 
 function digitsOnly(event: KeyboardEvent) {
-  if(['-', '+', 'e', 'E', '.'].includes(event.key)) event.preventDefault();
+  if (['-', '+', 'e', 'E', '.'].includes(event.key)) {
+    event.preventDefault();
+  }
+}
+
+// Update filter state whenever sliders move.
+watch(
+  [
+    () => price.low,
+    () => price.high,
+    () => year.low,
+    () => year.high
+  ],
+  () => {
+    filters.value = {
+      ...filters.value,
+      minPrice: price.low === price.min
+        ? undefined : toPrice(price.low),
+      maxPrice: price.high === price.max
+        ? undefined : toPrice(price.high),
+      minYear: year.low === year.min
+        ? undefined : year.low,
+      maxYear: year.high === year.max
+        ? undefined : year.high
+    };
+  }
+);
+
+function clearFilters() {
+  price.low = price.min;
+  price.high = price.max;
+  year.low = year.min;
+  year.high = year.max;
+  filters.value = {};
 }
 </script>
 
@@ -56,10 +100,24 @@ function digitsOnly(event: KeyboardEvent) {
         <span>${{ formatNumber(toPrice(price.low), 0) }}</span>
         <span>${{ formatNumber(toPrice(price.high), 0) }}</span>
       </div>
-
       <div class="range-container">
-        <input type="range" :min="price.min" :max="price.max" step="any" :value="price.low" @input="setLow(price, $event)" :class="{ 'on-top': lowOnTop(price) }">
-        <input type="range" :min="price.min" :max="price.max" step="any" :value="price.high" @input="setHigh(price, $event)">
+        <input
+          type="range"
+          :min="price.min"
+          :max="price.max"
+          step="any"
+          :value="price.low"
+          @input="setLow(price, $event)"
+          :class="{ 'on-top': lowOnTop(price) }"
+        >
+        <input
+          type="range"
+          :min="price.min"
+          :max="price.max"
+          step="any"
+          :value="price.high"
+          @input="setHigh(price, $event)"
+        >
       </div>
     </div>
 
@@ -69,62 +127,92 @@ function digitsOnly(event: KeyboardEvent) {
         <span>{{ year.low }}</span>
         <span>{{ year.high }}</span>
       </div>
-
       <div class="range-container">
-        <input type="range" :min="year.min" :max="year.max" step="1" :value="year.low" @input="setLow(year, $event)" :class="{ 'on-top': lowOnTop(year) }">
-        <input type="range" :min="year.min" :max="year.max" step="1" :value="year.high" @input="setHigh(year, $event)">
+        <input
+          type="range"
+          :min="year.min"
+          :max="year.max"
+          step="1"
+          :value="year.low"
+          @input="setLow(year, $event)"
+          :class="{ 'on-top': lowOnTop(year) }"
+        >
+        <input
+          type="range"
+          :min="year.min"
+          :max="year.max"
+          step="1"
+          :value="year.high"
+          @input="setHigh(year, $event)"
+        >
       </div>
     </div>
 
     <label>
       Make
-      <input>
+      <input v-model="filters.make">
     </label>
 
     <label>
       Model
-      <input>
+      <input v-model="filters.model">
     </label>
 
     <label>
-      Max Milage
-      <input type="number" min="0" @keydown="digitsOnly">
+      Max Mileage
+      <input
+        v-model="filters.maxMileage"
+        type="number"
+        min="0"
+        @keydown="digitsOnly"
+      >
     </label>
 
     <label>
       Max Owners
-      <input type="number" min="0" @keydown="digitsOnly">
+      <input
+        v-model="filters.maxOwners"
+        type="number"
+        min="0"
+        @keydown="digitsOnly"
+      >
     </label>
 
-    <label v-for="d in dropdowns" :key="d.label">
+    <label v-for="d in dropdowns" :key="d.key">
       {{ d.label }}
-      <select>
-        <option>Any</option>
-        <option v-for="option in d.options" :key="option">{{ option }}</option>
+      <select v-model="filters[d.key]">
+        <option value="">Any</option>
+        <option
+          v-for="option in d.options"
+          :key="option"
+          :value="option"
+        >
+          {{ option }}
+        </option>
       </select>
     </label>
 
     <label>
       State
-      <input maxlength="2">
+      <input v-model="filters.state" maxlength="2">
     </label>
 
     <label>
       City
-      <input>
+      <input v-model="filters.city">
     </label>
 
     <label>
       Exterior Color
-      <input>
+      <input v-model="filters.exteriorColor">
     </label>
 
     <label>
       Interior Color
-      <input>
+      <input v-model="filters.interiorColor">
     </label>
 
-    <button>Clear Filters</button>
+    <button @click="clearFilters">Clear Filters</button>
   </div>
 </template>
 
@@ -152,7 +240,7 @@ function digitsOnly(event: KeyboardEvent) {
   background-color: var(--gray);
   border: 2px solid var(--beige);
   border-radius: 2px;
-  color: var(--beige)
+  color: var(--beige);
 }
 
 .sidebar fieldset {
