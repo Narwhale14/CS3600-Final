@@ -31,6 +31,7 @@ export const TRANSMISSIONS = ['Manual', 'Automatic', 'Other', 'Unknown'] as cons
 export const DRIVETRAINS = ['FWD', 'RWD', 'AWD', '4WD', 'Other', 'Unknown'] as const;
 
 export interface CarFilters {
+  search?: string,
   minPrice?: number;
   maxPrice?: number;
   minYear?: number;

@@ -13,7 +13,7 @@ $select = '
 ';
 
 // GET /api/cars?vin=
-if (isset($_GET['vin'])) {
+if(isset($_GET['vin'])) {
     $stmt = $db->prepare("$select WHERE c.vin = ?");
     $stmt->execute([$_GET['vin']]);
 
@@ -33,24 +33,22 @@ $textFilters = [
     'interiorColor' => 'c.interior_color'
 ];
 
-foreach ($textFilters as $key => $column) {
-    if (
-        isset($_GET[$key]) &&
-        is_string($_GET[$key]) &&
-        trim($_GET[$key]) !== ''
-    ) {
+foreach($textFilters as $key => $column) {
+    if(isset($_GET[$key]) && is_string($_GET[$key]) && trim($_GET[$key]) !== '') {
         $where[] = "$column LIKE :$key";
         $params[$key] = '%' . trim($_GET[$key]) . '%';
     }
 }
 
-if (
-    isset($_GET['state']) &&
-    is_string($_GET['state']) &&
-    trim($_GET['state']) !== ''
-) {
+if(isset($_GET['state']) && is_string($_GET['state']) && trim($_GET['state']) !== '') {
     $where[] = 'c.state = :state';
     $params['state'] = strtoupper(trim($_GET['state']));
+}
+
+// Search bar matches across year, make, model and title at once
+if(isset($_GET['search']) && is_string($_GET['search']) && trim($_GET['search']) !== '') {
+    $where[] = "CONCAT_WS(' ', c.year, c.make, c.model, c.title) LIKE :search";
+    $params['search'] = '%' . trim($_GET['search']) . '%';
 }
 
 $dropdownFilters = [
@@ -61,12 +59,8 @@ $dropdownFilters = [
     'papers' => 'c.papers'
 ];
 
-foreach ($dropdownFilters as $key => $column) {
-    if (
-        isset($_GET[$key]) &&
-        is_string($_GET[$key]) &&
-        $_GET[$key] !== ''
-    ) {
+foreach($dropdownFilters as $key => $column) {
+    if(isset($_GET[$key]) && is_string($_GET[$key]) && $_GET[$key] !== '') {
         $where[] = "$column = :$key";
         $params[$key] = $_GET[$key];
     }
@@ -81,99 +75,64 @@ $numberFilters = [
     'maxOwners' => ['c.owners', '<=']
 ];
 
-foreach ($numberFilters as $key => [$column, $operator]) {
-    if (
-        isset($_GET[$key]) &&
-        is_scalar($_GET[$key]) &&
-        is_numeric($_GET[$key]) &&
-        (float) $_GET[$key] >= 0
-    ) {
+foreach($numberFilters as $key => [$column, $operator]) {
+    if(isset($_GET[$key]) && is_scalar($_GET[$key]) && is_numeric($_GET[$key]) && (float) $_GET[$key] >= 0) {
         $where[] = "$column $operator :$key";
         $params[$key] = $_GET[$key];
     }
 }
 
-function searchCars(
-    PDO $db,
-    string $select,
-    array $where,
-    array $params,
-    ?array $typeIds = null
-): array {
+function searchCars(PDO $db, string $select, array $where, array $params, ?array $typeIds = null): array {
     $conditions = $where;
     $bindings = $params;
 
-    if ($typeIds !== null) {
-        if (empty($typeIds)) {
+    if($typeIds !== null) {
+        if(empty($typeIds)) {
             return [];
         }
 
         $placeholders = [];
-
-        foreach (array_values($typeIds) as $i => $id) {
+        foreach(array_values($typeIds) as $i => $id) {
             $key = "bodyId$i";
             $placeholders[] = ":$key";
             $bindings[$key] = $id;
         }
 
-        $conditions[] = 'c.body_type_id IN (' .
-            implode(', ', $placeholders) . ')';
+        $conditions[] = 'c.body_type_id IN (' . implode(', ', $placeholders) . ')';
     }
 
     $sql = $select;
-
-    if (!empty($conditions)) {
+    if(!empty($conditions)) {
         $sql .= ' WHERE ' . implode(' AND ', $conditions);
     }
 
     $sql .= ' ORDER BY c.created_at DESC';
-
     $stmt = $db->prepare($sql);
     $stmt->execute($bindings);
-
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function respond(
-    array $cars,
-    ?array $relaxation = null
-): void {
-    echo json_encode([
-        'cars' => $cars,
-        'relaxation' => $relaxation
-    ]);
-
+function respond(array $cars, ?array $relaxation = null): void {
+    echo json_encode([ 'cars' => $cars, 'relaxation' => $relaxation ]);
     exit;
 }
 
 function shownTypes(array $cars): array {
-    return array_values(array_unique(
-        array_column($cars, 'body_type')
-    ));
+    return array_values(array_unique(array_column($cars, 'body_type')));
 }
 
-$bodyType = (
-    isset($_GET['bodyType']) &&
-    is_string($_GET['bodyType'])
-)
-    ? trim($_GET['bodyType'])
-    : '';
+$bodyType = (isset($_GET['bodyType']) && is_string($_GET['bodyType'])) ? trim($_GET['bodyType']) : '';
 
-if ($bodyType === '') {
+if($bodyType === '') {
     $cars = searchCars($db, $select, $where, $params);
     respond($cars);
 }
 
-$stmt = $db->prepare('
-    SELECT body_type_id, parent_type_id
-    FROM body_type
-    WHERE type_name = :name
-');
-
+$stmt = $db->prepare('SELECT body_type_id, parent_type_id FROM body_type WHERE type_name = :name');
 $stmt->execute(['name' => $bodyType]);
 $selected = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$selected) {
+if(!$selected) {
     respond([]);
 }
 
@@ -181,22 +140,14 @@ $selectedId = (int) $selected['body_type_id'];
 $parentId = $selected['parent_type_id'];
 
 // Exact body type
-$cars = searchCars(
-    $db,
-    $select,
-    $where,
-    $params,
-    [$selectedId]
-);
-
-if (!empty($cars)) {
+$cars = searchCars($db, $select, $where, $params, [$selectedId]);
+if(!empty($cars)) {
     respond($cars);
 }
 
 // Sibling body types
 $siblingIds = [];
-
-if ($parentId !== null) {
+if($parentId !== null) {
     $stmt = $db->prepare('
         SELECT body_type_id
         FROM body_type
@@ -204,32 +155,15 @@ if ($parentId !== null) {
           AND body_type_id <> :selected
     ');
 
-    $stmt->execute([
-        'parent' => $parentId,
-        'selected' => $selectedId
-    ]);
+    $stmt->execute([ 'parent' => $parentId, 'selected' => $selectedId ]);
 
-    $siblingIds = array_map(
-        'intval',
-        $stmt->fetchAll(PDO::FETCH_COLUMN)
-    );
+    $siblingIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
 }
 
-if (!empty($siblingIds)) {
-    $cars = searchCars(
-        $db,
-        $select,
-        $where,
-        $params,
-        $siblingIds
-    );
-
-    if (!empty($cars)) {
-        respond($cars, [
-            'requested' => $bodyType,
-            'level' => 'siblings',
-            'shownTypes' => shownTypes($cars)
-        ]);
+if(!empty($siblingIds)) {
+    $cars = searchCars( $db, $select, $where, $params, $siblingIds);
+    if(!empty($cars)) {
+        respond($cars, [ 'requested' => $bodyType, 'level' => 'siblings', 'shownTypes' => shownTypes($cars)]);
     }
 }
 
@@ -244,34 +178,13 @@ $stmt = $db->query('
     )
 ');
 
-$leafIds = array_map(
-    'intval',
-    $stmt->fetchAll(PDO::FETCH_COLUMN)
-);
+$leafIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+$excludedIds = array_merge([$selectedId], $siblingIds);
+$otherIds = array_values(array_diff($leafIds, $excludedIds));
+$cars = searchCars($db, $select, $where, $params, $otherIds);
 
-$excludedIds = array_merge(
-    [$selectedId],
-    $siblingIds
-);
-
-$otherIds = array_values(
-    array_diff($leafIds, $excludedIds)
-);
-
-$cars = searchCars(
-    $db,
-    $select,
-    $where,
-    $params,
-    $otherIds
-);
-
-if (!empty($cars)) {
-    respond($cars, [
-        'requested' => $bodyType,
-        'level' => 'root',
-        'shownTypes' => shownTypes($cars)
-    ]);
+if(!empty($cars)) {
+    respond($cars, ['requested' => $bodyType, 'level' => 'root', 'shownTypes' => shownTypes($cars)]);
 }
 
 respond([]);

@@ -58,21 +58,13 @@ watch(filters, (currentFilters, _, onCleanup) => {
     <div class="search-bar">
       <label class="search">
         <span class="pi pi-search"></span>
-        <input
-          type="search"
-          placeholder="Search by make, model, title, etc."
-        >
+        <input v-model="filters.search" type="search" placeholder="Search by make, model, title, etc.">
       </label>
     </div>
 
     <!-- Inform the user when TAH relaxation is used. -->
-    <div
-      v-if="!loading && !error && relaxation"
-      class="relaxation-notice"
-    >
-      <strong>
-        No {{ relaxation.requested }} listings matched.
-      </strong>
+    <div v-if="!loading && !error && relaxation" class="relaxation-notice">
+      <strong>No {{ relaxation.requested }} listings matched.</strong>
 
       <span v-if="relaxation.level === 'siblings'">
         Showing related body types:
