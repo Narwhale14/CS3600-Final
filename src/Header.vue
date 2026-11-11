@@ -1,11 +1,22 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const menuOpen = ref(false);
 const signedIn = ref(true); // replace later
 
 const navItems = ['Popular', 'Recent Sales'];
-const profileItems = computed(() => signedIn.value ? ['Profile Settings', 'Preferences', 'Saved', 'Purchases'] : ['Sign In', 'Sign Up']);
+const profileItems = computed(() => signedIn.value ? [
+  { label: 'Profile Settings', to: '/settings' },
+  { label: 'Preferences', to: '/preferences' },
+  { label: 'Saved', to: '/saved' },
+  { label: 'Purchases', to: '/purchases' }
+] : [
+  { label: 'Sign In', to: '/login' },
+  { label: 'Sign Up', to: '/signup' }
+]);
 </script>
 
 <template>
@@ -21,8 +32,8 @@ const profileItems = computed(() => signedIn.value ? ['Profile Settings', 'Prefe
         </button>
 
         <div class="profile-menu">
-          <button v-for="(label, i) in profileItems" :key="label" class="shard menu-shard" :style="{ '--i': profileItems.length - 1 - i }">
-            {{ label }}
+          <button v-for="(item, i) in profileItems" :key="item.to" class="shard menu-shard" :style="{ '--i': profileItems.length - 1 - i }" @click="router.push(item.to)">
+            {{ item.label }}
           </button>
         </div>
       </div>
